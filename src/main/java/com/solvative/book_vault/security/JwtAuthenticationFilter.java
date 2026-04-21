@@ -1,8 +1,11 @@
 package com.solvative.book_vault.security;
 
 
+
+
+import com.solvative.book_vault.entitites.auth.AuthUser;
 import com.solvative.book_vault.models.response.auth.AuthenticatedUser;
-import com.solvative.book_vault.services.AuthUserService;
+import com.solvative.book_vault.repos.AuthUserRepository;
 import com.solvative.book_vault.services.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -12,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -24,12 +26,11 @@ import java.util.List;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
-    private final AuthUserService authUserService;
+    private final AuthUserRepository authUserRepository;
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getServletPath();
-
         return path.equals("/api/auth/login")
                 || path.equals("/swagger-ui.html")
                 || path.startsWith("/swagger-ui/")
@@ -54,19 +55,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String username = jwtService.extractUsername(token);
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = authUserService.loadUserByUsername(username);
+                AuthUser user = authUserRepository.findByUsername(username).orElse(null);
 
-                if (jwtService.isTokenValid(token, userDetails.getUsername())) {
-                    String role = jwtService.extractRole(token);
-                    Long memberId = jwtService.extractMemberId(token);
-
-                    AuthenticatedUser principal = new AuthenticatedUser(username, role, memberId);
+                if (user != null && jwtService.isTokenValid(token, user.getUsername())) {
+                    AuthenticatedUser principal =
+                            new AuthenticatedUser(user.getUsername(), user.getRole(), user.getMemberId());
 
                     UsernamePasswordAuthenticationToken authentication =
                             new UsernamePasswordAuthenticationToken(
                                     principal,
                                     null,
-                                    List.of(new SimpleGrantedAuthority("ROLE_" + role))
+                                    List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole()))
                             );
 
                     SecurityContextHolder.getContext().setAuthentication(authentication);

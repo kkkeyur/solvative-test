@@ -1,11 +1,10 @@
 package com.solvative.book_vault.security;
 
 
+
 import com.solvative.book_vault.models.response.auth.AuthenticatedUser;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Component;
 
-@Component
 public final class SecurityUtil {
 
     private SecurityUtil() {

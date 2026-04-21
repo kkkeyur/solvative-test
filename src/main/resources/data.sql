@@ -27,13 +27,13 @@ VALUES
 
 INSERT INTO Auth_users (username, password, role, member_id)
 VALUES
-    ('librarian1', '$2a$10$7sE7z7k8c8vQxA1n8wGgCe3rjJfN0W3mQm6q3sFQ5mX0Q1mJ0Xh8S', 'LIBRARIAN', NULL),
-    ('librarian2', '$2a$10$7sE7z7k8c8vQxA1n8wGgCe3rjJfN0W3mQm6q3sFQ5mX0Q1mJ0Xh8S', 'LIBRARIAN', NULL),
+    ('librarian1', 'password123', 'LIBRARIAN', NULL),
+    ('librarian2', 'password123', 'LIBRARIAN', NULL),
 
-    ('member1', '$2a$10$7sE7z7k8c8vQxA1n8wGgCe3rjJfN0W3mQm6q3sFQ5mX0Q1mJ0Xh8S', 'MEMBER', 1),
-    ('member2', '$2a$10$7sE7z7k8c8vQxA1n8wGgCe3rjJfN0W3mQm6q3sFQ5mX0Q1mJ0Xh8S', 'MEMBER', 2),
-    ('member3', '$2a$10$7sE7z7k8c8vQxA1n8wGgCe3rjJfN0W3mQm6q3sFQ5mX0Q1mJ0Xh8S', 'MEMBER', 3),
-    ('member4', '$2a$10$7sE7z7k8c8vQxA1n8wGgCe3rjJfN0W3mQm6q3sFQ5mX0Q1mJ0Xh8S', 'MEMBER', 4);
+    ('member1', 'password123', 'MEMBER', 1),
+    ('member2', 'password123', 'MEMBER', 2),
+    ('member3', 'password123', 'MEMBER', 3),
+    ('member4', 'password123', 'MEMBER', 4);
 
 -- =========================
 -- LOANS

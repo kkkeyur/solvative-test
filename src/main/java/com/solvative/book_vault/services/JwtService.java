@@ -1,25 +1,28 @@
 package com.solvative.book_vault.services;
 
+
 import com.solvative.book_vault.entitites.auth.AuthUser;
-import com.solvative.book_vault.security.TokenProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import lombok.RequiredArgsConstructor;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Service
-@RequiredArgsConstructor
 public class JwtService {
 
-    private final TokenProperties properties;
+    private final SecretKey key;
+    private final long expirationMs;
 
-    private SecretKey key;
-    private long expirationMs;
-
-
+    public JwtService(@Value("${app.jwt.secret}") String secret,
+                      @Value("${app.jwt.expiration-ms}") long expirationMs) {
+        this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+        this.expirationMs = expirationMs;
+    }
 
     public String generateToken(AuthUser user) {
         Date now = new Date();
@@ -35,14 +38,6 @@ public class JwtService {
                 .compact();
     }
 
-    public Claims extractAllClaims(String token) {
-        return Jwts.parser()
-                .verifyWith(key)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
-    }
-
     public String extractUsername(String token) {
         return extractAllClaims(token).getSubject();
     }
@@ -52,12 +47,23 @@ public class JwtService {
     }
 
     public Long extractMemberId(String token) {
-        return extractAllClaims(token).get("memberId", Long.class);
+        Number memberId = extractAllClaims(token).get("memberId", Number.class);
+        return memberId == null ? null : memberId.longValue();
     }
 
     public boolean isTokenValid(String token, String username) {
-        Claims claims = extractAllClaims(token);
-        return username.equals(claims.getSubject())
-                && claims.getExpiration().after(new Date());
+        return username.equals(extractUsername(token)) && !isExpired(token);
+    }
+
+    private boolean isExpired(String token) {
+        return extractAllClaims(token).getExpiration().before(new Date());
+    }
+
+    private Claims extractAllClaims(String token) {
+        return Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 }

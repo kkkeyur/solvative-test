@@ -29,7 +29,7 @@ public class AuthUser {
     private String role;
 
     @Column(name = "member_id")
-    private UUID memberId;
+    private Long memberId;
 
 
 }

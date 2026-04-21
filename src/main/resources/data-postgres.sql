@@ -21,9 +21,9 @@ VALUES
 -- =========================
 INSERT INTO auth_users (username, password, role, member_id)
 VALUES
-    ('librarian1', '$2a$10$7sE7z7k8c8vQxA1n8wGgCe3rjJfN0W3mQm6q3sFQ5mX0Q1mJ0Xh8S', 'LIBRARIAN', NULL),
-    ('member1', '$2a$10$7sE7z7k8c8vQxA1n8wGgCe3rjJfN0W3mQm6q3sFQ5mX0Q1mJ0Xh8S', 'MEMBER', 1),
-    ('member2', '$2a$10$7sE7z7k8c8vQxA1n8wGgCe3rjJfN0W3mQm6q3sFQ5mX0Q1mJ0Xh8S', 'MEMBER', 2);
+    ('librarian1', 'password123', 'LIBRARIAN', NULL),
+    ('member1', 'password123', 'MEMBER', 1),
+    ('member2', 'password123', 'MEMBER', 2);
 
 -- =========================
 -- LOANS

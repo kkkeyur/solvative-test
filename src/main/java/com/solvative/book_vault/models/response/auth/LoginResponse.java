@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ToString
@@ -16,7 +15,7 @@ public class LoginResponse {
     private String token;
     private String type = "Bearer";
 
-
     public LoginResponse(String token) {
+        this.token = token;
     }
 }
